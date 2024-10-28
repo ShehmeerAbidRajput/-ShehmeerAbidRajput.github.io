@@ -8,12 +8,13 @@
 /* Body Styles */
 body {
     font-family: Arial, sans-serif;
-    color: #333;
+    color: #f8f8f2;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 20px;
+    background-color: #282a36; /* Dark Dracula background */
 }
 
 /* Header */
@@ -24,11 +25,11 @@ header {
 
 header h1 {
     font-size: 2.5em;
-    color: #007acc;
+    color: #bd93f9; /* Purple */
 }
 
 .subtitle {
-    color: #555;
+    color: #6272a4; /* Soft gray-blue */
 }
 
 /* Navigation */
@@ -41,8 +42,13 @@ nav ul {
 
 nav a {
     text-decoration: none;
-    color: #007acc;
+    color: #8be9fd; /* Cyan */
     font-weight: bold;
+    transition: color 0.2s ease-in-out;
+}
+
+nav a:hover {
+    color: #50fa7b; /* Green hover */
 }
 
 /* Section Styles */
@@ -51,12 +57,12 @@ section {
     width: 100%;
     margin: 40px 0;
     padding: 20px;
-    background: #f9f9f9;
+    background: #44475a; /* Dracula card background */
     border-radius: 8px;
 }
 
 h2 {
-    color: #333;
+    color: #bd93f9;
     margin-bottom: 10px;
 }
 
@@ -69,22 +75,24 @@ h2 {
 
 .project-item {
     padding: 15px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid #6272a4;
     border-radius: 8px;
+    background: #44475a;
 }
 
 .project-item h3 {
     margin-bottom: 5px;
-    color: #007acc;
+    color: #8be9fd;
 }
 
 .project-item a {
-    color: #333;
+    color: #f1fa8c; /* Yellow link color */
     text-decoration: none;
     font-weight: bold;
 }
 
 .project-item a:hover {
+    color: #50fa7b;
     text-decoration: underline;
 }
 
@@ -92,5 +100,5 @@ h2 {
 footer {
     text-align: center;
     margin-top: 40px;
-    color: #777;
+    color: #6272a4;
 }
