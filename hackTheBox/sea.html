@@ -130,40 +130,53 @@
         <p>Using the GitHub exploit for this version of WonderCMS, we were able to achieve Remote Code Execution (RCE)
             and obtained a reverse shell using Netcat. The initial access granted us user privileges as
             <code>www-data</code>.</p>
-
+            <p>Below mentioned are screenshots of the exploit used from github and following the instructions</p>
+            <img src="/hackTheBox/Sea/asset/img/s4.png" alt="" class="screenshot">
+            <p>Enter the payload mentioned above in the website input of sea.htb/contact.php</p>
+            <img src="/hackTheBox/Sea/asset/img/s5.png" alt="" class="screenshot">
+            <img src="/hackTheBox/Sea/asset/img/s6.png" alt="" class="screenshot">
         <h3>Exploring the Application</h3>
-        <p>Further exploration of the application led us to the <code>/data</code> directory, where we found a file
+        <p>Further exploration of the application led us to the <code>/var/www/sea/data</code> directory, where we found a file
             named <code>database.js</code>. This file contained a bcrypt password hash, which we needed to decrypt to
             proceed.</p>
+        <img src="/hackTheBox/Sea/asset/img/s7.png" alt="" class="screenshot">
+        <p>Use the command: <code>hashcat -a 0 -m 3200 hash.hash /usr/share/wordlists/rockyou.txt</code> to decrypt the password, remember to remove \ as they induce error</p>
+        <img src="/hackTheBox/Sea/asset/img/s8.png" alt="" class="screenshot">
+        <p>Now we have the some credential but we are not sure to which user are the associated to as database.js does not specify.</p>
 
         <h3>Escalating Privileges</h3>
         <p>Upon inspecting the <code>/home</code> directory, we found two users: <code>amay</code> and <code>geo</code>.
+            <img src="/hackTheBox/Sea/asset/img/s9.png" alt="" class="screenshot">
             Using the decrypted password, we were able to switch users (with <code>su amay</code>) and successfully
             gained access as <code>amay</code>.</p>
 
         <h3>Capturing the User Flag</h3>
         <p>Once logged in as <code>amay</code>, we navigated to <code>/home/amay/user.txt</code> and retrieved the user
             flag.</p>
+            <code>****Nice try! I will not be sharing the user.txt you should atleast try the steps mentioned above and see user.txt yourself****</code>
 
 
         <h2>Gaining the Admin Flag</h2>
         <p>While investigating network activity with <code>netstat -auntp</code>, we observed a service running on port <code>8080</code> on the IP <code>127.0.0.1</code>, which was not accessible publicly. To access this service, we set up SSH port forwarding with the following command:</p>
+        <img src="/hackTheBox/Sea/asset/img/s10.png" alt="" class="screenshot">
         <pre><code>ssh -L 1234:127.0.0.1:8080 amay@sea.htb</code></pre>
         
         <p>Once connected, we navigated to <code>localhost:1234</code> on our attacker machine (Kali Linux) and found a system monitoring application hosted on this port. Through analysis, we discovered that any path passed as a parameter to the application was monitored for suspicious activity.</p>
-        
+        <img src="/hackTheBox/Sea/asset/img/s11.png" alt="" class="screenshot">
+        <img src="/hackTheBox/Sea/asset/img/s12.png" alt="" class="screenshot">
+
         <h3>Inducing an Error to Retrieve File Contents</h3>
         <p>If suspicious activity was detected in the path parameter, the application would prepend the file's content in a <code>&lt;pre&gt;</code> tag on the response page. Using Burp Suite, we intercepted the request and modified the path parameter, injecting <code>;</code> to induce an error. This allowed us to view the contents of any specified file.</p>
-        
+        <img src="/hackTheBox/Sea/asset/img/s13.png" alt="" class="screenshot">
         <p>With this approach, we successfully accessed <code>/root/root.txt</code>, revealing the admin flag.</p>
-            
+        <code>****Nice try! I will not be sharing the root.txt you should atleast try the steps mentioned above and see root.txt yourself****</code>   
 
-        <h2>Screenshots</h2>
-        <p><img src="images/dir-enumeration.png" alt="Directory Enumeration" class="screenshot"></p>
+        <h2>Easter Egg</h2>
+        <p>Using the same logic, content of /etc/shadow are shown below. Now you should attempt to completely compromise the application</p>
         <p><img src="images/crm-info.png" alt="CRM Information" class="screenshot"></p>
 
         <footer>
-            &copy; <span id="year"></span> by Shehmee
+            &copy; <span id="year"></span> by Macraven49
         </footer>
     </div>
 
