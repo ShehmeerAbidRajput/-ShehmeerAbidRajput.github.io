@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WonderCMS Vulnerability Exploit Walkthrough</title>
     <style>
+        /* General body styling */
         body {
             font-family: Arial, sans-serif;
             color: #333;
@@ -14,7 +15,8 @@
             margin: 0;
             padding: 0;
         }
-
+    
+        /* Container styling for centered content with shadow and rounded corners */
         .container {
             max-width: 800px;
             margin: 20px auto;
@@ -23,45 +25,64 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        h1,
-        h2,
-        h3 {
+    
+        /* Headings styling */
+        h1, h2, h3 {
             color: #444;
         }
-
+    
         h1 {
             text-align: center;
             font-size: 2em;
             margin-bottom: 20px;
         }
-
+    
         h2 {
             margin-top: 1.5em;
             border-bottom: 2px solid #ddd;
             padding-bottom: 5px;
         }
-
-        p,
-        ul,
-        li {
+    
+        /* Paragraph, list, and code block styling */
+        p, ul, li {
             margin-bottom: 1em;
         }
-
-        code,
-        pre {
+    
+        code {
             background: #f4f4f4;
             padding: 2px 5px;
             border-radius: 4px;
+            font-size: 0.95em;
         }
-
+    
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 0.95em;
+        }
+    
+        /* Screenshot/image styling */
         .screenshot {
+            display: block;
             max-width: 100%;
-            margin: 10px 0;
+            height: auto;
+            margin: 15px auto; /* Centered image */
             border: 1px solid #ddd;
             border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
         }
-
+    
+        /* Directory enumeration section styling */
+        .directory-enum {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+    
+        /* Footer styling */
         footer {
             text-align: center;
             padding: 10px;
@@ -69,6 +90,7 @@
             color: #777;
         }
     </style>
+    
 </head>
 
 <body>
