@@ -69,13 +69,14 @@
     <h3>Theme Files and CRM Information</h3>
     <p>In the <code>/bike/</code> directory, we discovered the following files, which revealed details about the WonderCMS theme and version:</p>
 
-    <h4>Contents of <code>readme.md</code></h4>
-    <p>The <code>readme.md</code> file provided information on the CRM software version and theme details:</p>
+    <h4>Contents of <code>readme.md</code> and <code>version</code> File</h4>
+    <p>We found artifacts in <code>readme.md</code> indicating that WonderCMS is being used. Additionally, the <code>version</code> file in the same directory specifies that the CMS version is 3.2.0.</p>
     <ul>
         <li><strong>CRM Version:</strong> 3.2.0</li>
         <li><strong>Theme Name:</strong> WonderCMS bike theme</li>
         <li><strong>Author:</strong> turboblack</li>
     </ul>
+    
     <p>Based on this information, we found an exploit for this version:</p>
     <ul>
         <li><strong>Exploit:</strong> <a href="https://github.com/thefizzyfish/CVE-2023-41425-wonderCMS_RCE" target="_blank">CVE-2023-41425 - WonderCMS Remote Code Execution (RCE)</a></li>
