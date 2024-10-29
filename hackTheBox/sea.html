@@ -121,14 +121,17 @@
             flag.</p>
 
 
-        <h2>SSH Forwarding</h2>
-        <p>Using the discovered credentials, we performed SSH forwarding to maintain access.</p>
-
-        <h3>Useful Commands and Evidence</h3>
-        <ul>
-            <li><strong>Network Activity:</strong> <code>netstat -auntp</code></li>
-            <li><strong>SSH Evidence:</strong> Screenshots provided below.</li>
-        </ul>
+        <h2>Gaining the Admin Flag</h2>
+        <p>While investigating network activity with <code>netstat -auntp</code>, we observed a service running on port <code>8080</code> on the IP <code>127.0.0.1</code>, which was not accessible publicly. To access this service, we set up SSH port forwarding with the following command:</p>
+        <pre><code>ssh -L 1234:127.0.0.1:8080 amay@sea.htb</code></pre>
+        
+        <p>Once connected, we navigated to <code>localhost:1234</code> on our attacker machine (Kali Linux) and found a system monitoring application hosted on this port. Through analysis, we discovered that any path passed as a parameter to the application was monitored for suspicious activity.</p>
+        
+        <h3>Inducing an Error to Retrieve File Contents</h3>
+        <p>If suspicious activity was detected in the path parameter, the application would prepend the file's content in a <code>&lt;pre&gt;</code> tag on the response page. Using Burp Suite, we intercepted the request and modified the path parameter, injecting <code>;</code> to induce an error. This allowed us to view the contents of any specified file.</p>
+        
+        <p>With this approach, we successfully accessed <code>/root/root.txt</code>, revealing the admin flag.</p>
+            
 
         <h2>Screenshots</h2>
         <p><img src="images/dir-enumeration.png" alt="Directory Enumeration" class="screenshot"></p>
