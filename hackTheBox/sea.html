@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WonderCMS Vulnerability Exploit Walkthrough</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f5f5f5;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1, h2, h3 {
+            color: #444;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        h2 {
+            margin-top: 1.5em;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        p, ul, li {
+            margin-bottom: 1em;
+        }
+        code, pre {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        .screenshot {
+            max-width: 100%;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 0.9em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>WonderCMS Vulnerability Exploit Walkthrough</h1>
+
+    <h2>Initial Foothold</h2>
+    <h3>Directory Enumeration</h3>
+    <p>Starting from the <code>/themes</code> endpoint, we performed directory enumeration and found an interesting sub-directory: <code>/bike</code> (HTTP 301 Redirect).</p>
+    <p><strong>URL:</strong> sea.htb/themes/bike/</p>
+
+    <h3>Theme Files and CRM Information</h3>
+    <p>In the <code>/bike/</code> directory, we discovered the following files, which revealed details about the WonderCMS theme and version:</p>
+
+    <h4>Contents of <code>readme.md</code></h4>
+    <p>The <code>readme.md</code> file provided information on the CRM software version and theme details:</p>
+    <ul>
+        <li><strong>CRM Version:</strong> 3.2.0</li>
+        <li><strong>Theme Name:</strong> WonderCMS bike theme</li>
+        <li><strong>Author:</strong> turboblack</li>
+    </ul>
+    <p>Based on this information, we found an exploit for this version:</p>
+    <ul>
+        <li><strong>Exploit:</strong> <a href="https://github.com/thefizzyfish/CVE-2023-41425-wonderCMS_RCE" target="_blank">CVE-2023-41425 - WonderCMS Remote Code Execution (RCE)</a></li>
+    </ul>
+
+    <h2>Privilege Escalation</h2>
+    <p>Within the <code>/data</code> directory, we found <code>database.js</code>, containing a password hash for a user. The password was stored in bcrypt format, and backslashes had to be removed to use it correctly.</p>
+
+    <h3>Steps Taken:</h3>
+    <ol>
+        <li>Accessed <code>/data/database.js</code>.</li>
+        <li>Extracted the bcrypt password hash.</li>
+        <li>Removed backslashes as required to obtain the usable password.</li>
+    </ol>
+
+    <h2>SSH Forwarding</h2>
+    <p>Using the discovered credentials, we performed SSH forwarding to maintain access.</p>
+
+    <h3>Useful Commands and Evidence</h3>
+    <ul>
+        <li><strong>Network Activity:</strong> <code>netstat -auntp</code></li>
+        <li><strong>SSH Evidence:</strong> Screenshots provided below.</li>
+    </ul>
+
+    <h2>Screenshots</h2>
+    <p><img src="images/dir-enumeration.png" alt="Directory Enumeration" class="screenshot"></p>
+    <p><img src="images/crm-info.png" alt="CRM Information" class="screenshot"></p>
+
+    <footer>
+        &copy; <span id="year"></span> by Shehmee
+    </footer>
+</div>
+
+<script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
