@@ -127,13 +127,13 @@
         <p>Since the <code>Notice from HR.txt</code> file only provided the password but no associated username, we used <code>crackmapexec</code> to perform a brute-force attack to find the correct username. The command we used was:</p>
         <pre><code>crackmapexec smb 10.10.11.35 cicada.htb -u 'guest' -p '' --rid-brute</code></pre>
         <p>We chose <code>guest</code> as the username because it is a default username in Windows environments. This allowed us to brute-force the RID and potentially find a valid username associated with the password.</p>
-        <img src="/hackTheBox/Cicada/asset/img/3.1" alt="CrackMapExec Screenshot" class="screenshot">
+        <img src="/hackTheBox/Cicada/asset/img/03.1.png" alt="CrackMapExec Screenshot" class="screenshot">
 
         <h2>Brute Forcing with Username and Password Files</h2>
         <p>After enumerating the usernames using <code>crackmapexec</code>, we saved the discovered usernames in a file called <code>username.txt</code> and placed the password from the <code>Notice from HR.txt</code> file in a <code>password.txt</code> file. We then proceeded with the brute-forcing attack using the following command:</p>
         <pre><code>crackmapexec smb 10.10.11.35 -d cicada.htb -u username.txt -p password.txt</code></pre>
         <p>After processing the output, we successfully found a valid username and password combination!</p>
-        <img src="/hackTheBox/Cicada/asset/img/3.2" alt="CrackMapExec Brute Forcing Screenshot" class="screenshot">
+        <img src="/hackTheBox/Cicada/asset/img/03.2.png" alt="CrackMapExec Brute Forcing Screenshot" class="screenshot">
 
     </div>
 
