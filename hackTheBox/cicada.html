@@ -97,20 +97,20 @@
     <div class="container">
         <h1>Cicada - Easy - Season 6</h1>
 
-        <h2>Initial Foothold</h2>
+        <h3>Initial Foothold</h2>
         <h3>Nmap Scan</h3>
         <p>We started by performing an Nmap scan on the target machine using the following command:</p>
         <pre><code>nmap -p- 10.10.11.35</code></pre>
         <p>The scan revealed several open ports and services, which helped us in further enumeration.</p>
         <img src="/hackTheBox/Cicada/asset/img/01.png" alt="Nmap scan result" class="screenshot">
 
-        <h2>SMB Enumeration</h2>
+        <h3>SMB Enumeration</h2>
         <p>After performing the Nmap scan, we proceeded with SMB enumeration using the following command:</p>
         <pre><code>smbclient -L \\10.10.11.35</code></pre>
         <p>This command revealed available SMB shares on the target machine, which provided further information for exploitation.</p>
         <img src="/hackTheBox/Cicada/asset/img/02.png" alt="SMB Enumeration Screenshot" class="screenshot">
 
-        <h2>Exploring SMB Shares</h2>
+        <h3>Exploring SMB Shares</h2>
         <p>After performing the SMB enumeration, we found two subdirectories: <code>DEV</code> and <code>HR</code>. We decided to explore the <code>HR</code> folder further. To access it, we used the following command:</p>
         <pre><code>smbclient \\10.10.11.35\HR</code></pre>
         <p>Once inside the SMB client, we used the <code>get</code> command to download a file named <code>Notice from HR.txt</code> to our local folder:</p>
@@ -118,22 +118,85 @@
         <p>This allowed us to obtain a file from the <code>HR</code> directory, which could be useful for further exploitation.</p>
         <img src="/hackTheBox/Cicada/asset/img/02.2.png" alt="SMB HR Directory Screenshot" class="screenshot">
 
-        <h2>Viewing the Downloaded File</h2>
+        <h3>Viewing the Downloaded File</h2>
         <p>Upon downloading the file <code>Notice from HR.txt</code>, we opened it and discovered a default password that could be useful for further exploitation. The contents of the file were as follows:</p>
         <img src="/hackTheBox/Cicada/asset/img/2.3.png" alt="Notice from HR File Screenshot" class="screenshot">
         <p></p>
        
-        <h2>Brute Forcing the Username</h2>
+        <h3>Brute Forcing the Username</h2>
         <p>Since the <code>Notice from HR.txt</code> file only provided the password but no associated username, we used <code>crackmapexec</code> to perform a brute-force attack to find the correct username. The command we used was:</p>
         <pre><code>crackmapexec smb 10.10.11.35 cicada.htb -u 'guest' -p '' --rid-brute</code></pre>
         <p>We chose <code>guest</code> as the username because it is a default username in Windows environments. This allowed us to brute-force the RID and potentially find a valid username associated with the password.</p>
         <img src="/hackTheBox/Cicada/asset/img/03.1.png" alt="CrackMapExec Screenshot" class="screenshot">
 
-        <h2>Brute Forcing with Username and Password Files</h2>
+        <h3>Brute Forcing with Username and Password Files</h2>
         <p>After enumerating the usernames using <code>crackmapexec</code>, we saved the discovered usernames in a file called <code>username.txt</code> and placed the password from the <code>Notice from HR.txt</code> file in a <code>password.txt</code> file. We then proceeded with the brute-forcing attack using the following command:</p>
         <pre><code>crackmapexec smb 10.10.11.35 -d cicada.htb -u username.txt -p password.txt</code></pre>
         <p>After processing the output, we successfully found a valid username and password combination!</p>
         <img src="/hackTheBox/Cicada/asset/img/03.2.png" alt="CrackMapExec Brute Forcing Screenshot" class="screenshot">
+        
+        <h2>Horizontal Escalation</h2>
+        <h3>Enumerating Active Directory with Enum4Linux</h2>
+        <p>With the valid credentials, we used <code>enum4linux</code> to perform enumeration of the Active Directory (AD). The command we used was:</p>
+        <pre><code>enum4linux -a -u 'michael.wrightson' -p 'Cicada$M6Corpb*@Lp#nZp!8' 10.10.11.35</code></pre>
+        <p>During the enumeration, we discovered that one user had their password stored in the account description field.</p>
+        <img src="/hackTheBox/Cicada/asset/img/3.3.png" alt="Enum4Linux Output Screenshot" class="screenshot">
+        
+        <h3>Accessing DEV Folder in SMB Shares</h2>
+        <p>Since we were not able to open the <code>DEV</code> folder with the previous credentials, we attempted to access it using the credentials we had gathered. We used the <code>smbclient</code> tool to try and access the <code>DEV</code> share:</p>
+        <pre><code>smbclient \\\\10.10.11.35\\DEV -U 'david.orelius' -P 'aRt$Lp#7t*VQ!'</code></pre>
+        <p>By using the valid credentials, we successfully gained access to the <code>DEV</code> share and found a file within the directory. The contents of that file are as follows:</p>
+        <img src="/hackTheBox/Cicada/asset/img/pass.png" alt="Accessing DEV Folder Screenshot" class="screenshot">
+        
+
+        <h3>Establishing Remote Connection with Evil-WinRM</h2>
+        <p>After successfully obtaining valid credentials, we attempted to access the target machine remotely. Since SSH was not enabled, we decided to try an alternative method using <code>evil-winrm</code> for establishing a remote connection.</p>
+        <p>We used the following command to initiate the connection:</p>
+        <pre><code>evil-winrm -i 10.10.11.35 -u 'emily.oscars'</code></pre>
+        <p>We were able to establish a successful remote connection to the target machine, allowing us to maintain access and proceed with further enumeration and exploitation.</p>
+        <img src="/hackTheBox/Cicada/asset/img/05.png" alt="Remote Connection with Evil-WinRM Screenshot" class="screenshot">
+        
+        <h2>Privilege Escalation</h2>
+        <h3>Checking User Permissions</h2>
+        <p>Once we had established a remote connection, we decided to check the user's permissions to look for any interesting privileges. We ran the following command:</p>
+        <pre><code>whoami /all</code></pre>
+        <p>Upon reviewing the output, we discovered an intriguing permission: <code>SeBackupPrivilege</code>. This permission allows the user to back up files and directories, which can be useful for various attacks, such as accessing sensitive files.</p>
+        <img src="/hackTheBox/Cicada/asset/img/privs.png" alt="Checking Permissions Screenshot" class="screenshot">
+
+        <h3>Exploiting SeBackupPrivilege to Create and Download Backup Copies</h2>
+        <p>Using the <code>SeBackupPrivilege</code> permission, we created backup copies of critical files on the system. Following the instructions provided in this <a href="https://www.youtube.com/watch?v=4HAlUpYVE3Q" target="_blank">video tutorial</a>, we were able to create the following backup files:</p>
+        <ul>
+            <li><code>system.bak</code></li>
+            <li><code>ntds.dit</code></li>
+        </ul>
+        <p>After creating these backups, we downloaded them to our local system for further analysis. The backup process and file transfer were critical steps in extracting sensitive data for privilege escalation.</p>
+        <img src="/hackTheBox/Cicada/asset/img/folders.png" alt="Backup and Download Process Screenshot" class="screenshot">
+
+        <h3>Extracting Secrets Using impacket-secretdump</h2>
+        <p>After successfully downloading the backup files <code>system.bak</code> and <code>ntds.dit</code> to our local system, we used the <code>impacket-secretdump</code> tool to extract sensitive information from the backups. The command we used was as follows:</p>
+        <pre><code>impacket-secretdump -ntds ntds.dit -system system.bak local</code></pre>
+        <p>Using this command, we were able to dump the hashed credentials from the SAM database, including the administrator's hash. This hash could potentially be used for privilege escalation and gaining full control of the system.</p>
+        <img src="/hackTheBox/Cicada/asset/img/hashes.png" alt="Impacket-secretdump Output Screenshot" class="screenshot">
+
+        <h3>Login Using Hash Of Administrator</h2>
+        <p>After extracting the administrator's hash from the SAM database, we used the <code>evil-winrm</code> tool to log in to the target system as the administrator. This allowed us to achieve full control of the system. The command we used was:</p>
+        <pre><code>evil-winrm -i 10.10.11.35 -u administrator -H [HASH]</code></pre>
+        <p>Using the administrator's hash, we successfully established a remote connection to the system with elevated privileges, marking the final step in gaining complete control.</p>
+        <img src="/hackTheBox/Cicada/asset/img/done.png" alt="Administrator Login Screenshot" class="screenshot">
+
+        <h2>Conclusion</h2>
+        <p>The exploitation of the <code>cicada.htb</code> machine involved a combination of enumeration, credential discovery, SMB exploitation, and privilege escalation techniques. Here's a summary of the process:</p>
+        <ul>
+            <li>Initial reconnaissance with <code>nmap</code> revealed open ports and services.</li>
+            <li>SMB enumeration allowed access to sensitive files and discovery of default credentials.</li>
+            <li>Brute-forcing identified valid credentials, which were then used to explore Active Directory.</li>
+            <li>Further enumeration revealed sensitive user information, leading to access to additional shares like <code>DEV</code>.</li>
+            <li>Privilege escalation was achieved by leveraging the <code>SeBackupPrivilege</code> permission to dump sensitive data, including the SAM database.</li>
+            <li>Using the extracted administrator hash, a remote session was established, granting full control over the machine.</li>
+        </ul>
+        <p>This process demonstrates the importance of securing SMB shares, managing user privileges, to prevent unauthorized access and privilege escalation.</p>
+        <h2>Lessoon from this box</h2>
+        <h1>!!Enumeration IS EVERYTHING!!</h1>
 
     </div>
 
