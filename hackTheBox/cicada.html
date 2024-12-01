@@ -104,6 +104,12 @@
         <p>The scan revealed several open ports and services, which helped us in further enumeration.</p>
         <img src="/hackTheBox/Cicada/asset/img/01.png" alt="Nmap scan result" class="screenshot">
 
+        <h2>SMB Enumeration</h2>
+        <p>After performing the Nmap scan, we proceeded with SMB enumeration using the following command:</p>
+        <pre><code>smbclient -L \\10.10.11.35</code></pre>
+        <p>This command revealed available SMB shares on the target machine, which provided further information for exploitation.</p>
+        <img src="/hackTheBox/Cicada/asset/img/02.png" alt="SMB Enumeration Screenshot" class="screenshot">
+
 
     </div>
 
