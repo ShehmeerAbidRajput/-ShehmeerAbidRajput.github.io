@@ -97,7 +97,7 @@
     <div class="container">
         <h1>Cicada - Easy - Season 6</h1>
 
-        <h2>Initial Foothold</h2>
+        <h2>Enumeration</h2>
         <h3>Nmap Scan</h3>
         <p>We started by performing an Nmap scan on the target machine using the following command:</p>
         <pre><code>nmap -p- 10.10.11.35</code></pre>
@@ -117,12 +117,13 @@
         <pre><code>get "Notice from HR.txt"</code></pre>
         <p>This allowed us to obtain a file from the <code>HR</code> directory, which could be useful for further exploitation.</p>
         <img src="/hackTheBox/Cicada/asset/img/02.2.png" alt="SMB HR Directory Screenshot" class="screenshot">
-
+        
         <h3>Viewing the Downloaded File</h2>
         <p>Upon downloading the file <code>Notice from HR.txt</code>, we opened it and discovered a default password that could be useful for further exploitation. The contents of the file were as follows:</p>
         <img src="/hackTheBox/Cicada/asset/img/2.3.png" alt="Notice from HR File Screenshot" class="screenshot">
         <p></p>
-       
+
+        <h2>Initial Foothold</h2>
         <h3>Brute Forcing the Username</h2>
         <p>Since the <code>Notice from HR.txt</code> file only provided the password but no associated username, we used <code>crackmapexec</code> to perform a brute-force attack to find the correct username. The command we used was:</p>
         <pre><code>crackmapexec smb 10.10.11.35 cicada.htb -u 'guest' -p '' --rid-brute</code></pre>
