@@ -97,7 +97,7 @@
     <div class="container">
         <h1>Cicada - Easy - Season 6</h1>
 
-        <h3>Initial Foothold</h2>
+        <h2>Initial Foothold</h2>
         <h3>Nmap Scan</h3>
         <p>We started by performing an Nmap scan on the target machine using the following command:</p>
         <pre><code>nmap -p- 10.10.11.35</code></pre>
@@ -107,7 +107,7 @@
         <h3>SMB Enumeration</h2>
         <p>After performing the Nmap scan, we proceeded with SMB enumeration using the following command:</p>
         <pre><code>smbclient -L \\10.10.11.35</code></pre>
-        <p>This command revealed available SMB shares on the target machine, which provided further information for exploitation.</p>
+        <p>This command revealed available SMB shares on the target machine.</p>
         <img src="/hackTheBox/Cicada/asset/img/02.png" alt="SMB Enumeration Screenshot" class="screenshot">
 
         <h3>Exploring SMB Shares</h2>
@@ -126,7 +126,7 @@
         <h3>Brute Forcing the Username</h2>
         <p>Since the <code>Notice from HR.txt</code> file only provided the password but no associated username, we used <code>crackmapexec</code> to perform a brute-force attack to find the correct username. The command we used was:</p>
         <pre><code>crackmapexec smb 10.10.11.35 cicada.htb -u 'guest' -p '' --rid-brute</code></pre>
-        <p>We chose <code>guest</code> as the username because it is a default username in Windows environments. This allowed us to brute-force the RID and potentially find a valid username associated with the password.</p>
+        <p>We chose <code>guest</code> as the username because it is a default username in Windows environments. This allowed us to brute-force the RID and potentially find a valid list of username present in Active Directory.</p>
         <img src="/hackTheBox/Cicada/asset/img/03.1.png" alt="CrackMapExec Screenshot" class="screenshot">
 
         <h3>Brute Forcing with Username and Password Files</h2>
